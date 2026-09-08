@@ -58,7 +58,7 @@ h2 {
     color: var(--text-h);
 }
 
-repoinfo {
+.repoinfo {
     font-family: monospace;
     display: inline;
     position:relative;

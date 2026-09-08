@@ -7,10 +7,10 @@ function App() {
   return (
     <>
     <section id="bottom-left">
-      <div className="logo">
-        <img src={mainLogo} className = "logoImage" alt="HoneyWasp logo" />
-        <repoinfo>TruFoox/HoneyWasp WebUI v1.0</repoinfo>
-      </div>
+        <div className="logo">
+          <img src={mainLogo} className = "logoImage" alt="HoneyWasp logo" />
+          <span className="repoinfo">TruFoox/HoneyWasp WebUI v1.0</span>
+        </div>
     </section>
     <section id="center">
         <div>
