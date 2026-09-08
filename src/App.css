@@ -1,0 +1,26 @@
+#top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+#top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+#center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Because CSS places it at the corner */
+}
+#bottom-left {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+#bottom-right {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
