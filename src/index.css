@@ -51,6 +51,34 @@ body {
     margin: 0;
 }
 
+.repoinfo {
+    font-family: monospace;
+    display: inline;
+    position:relative;
+
+    font-size: 10px;
+    color: #ffffff;
+
+}
+.logo {
+    position: relative;
+    display: flex;
+
+    .logo {
+        transform: scale(1.4);
+    }
+}
+
+.repoText {
+    text-align: left;
+}
+.logoImage {
+    position:relative;
+    width: 40px;
+    height: auto;
+}
+
+
 h1,
 h2 {
     font-family: var(--heading);
@@ -58,35 +86,11 @@ h2 {
     color: var(--text-h);
 }
 
-.repoinfo {
-    font-family: monospace;
-    display: inline;
-    position:relative;
-    top: -13px;
-    left: 1px;
-    font-size: 10px;
-    color: #ffffff;
-
-}
-.logo {
-    position: relative;
-
-    .logo {
-        transform: scale(1.4);
-    }
-}
-
-.logoImage {
-    position:relative;
-    width: 40px;
-    height: auto;
-}
-
 h1 { /* Big header */
     font-size: 56px;
     letter-spacing: -1.68px;
     margin: 32px 0;
-    @media (max-width: 1024px) {
+    @media (max-width: 2000px) {
         font-size: 36px;
         margin: 20px 0;
     }
