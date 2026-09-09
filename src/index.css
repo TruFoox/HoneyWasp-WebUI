@@ -60,11 +60,11 @@ body {
     color: #ffffff;
 
 }
-.logo {
+.sysinfo {
     position: relative;
     display: flex;
 
-    .logo {
+    .sysinfo {
         transform: scale(1.4);
     }
 }
