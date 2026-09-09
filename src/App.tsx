@@ -11,7 +11,7 @@ function App() {
     const webUIVersion = "v1.0"
     const [honeyWaspVersion, setHoneyWaspVersion] = useState<string>("Not Fetched")
 
-    const socketRef = useRef(null) // Use socketRef.current when referencing
+    const socketRef = useRef<WebSocket | null>(null); // Remember to use socketRef.current when referencing
 
     useEffect(() => { // "Run this when something happens"
         const socket = new WebSocket('ws://localhost:8080')
