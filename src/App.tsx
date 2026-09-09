@@ -13,36 +13,42 @@ function App() {
 
     const socketRef = useRef<WebSocket | null>(null); // Remember to use socketRef.current when referencing
 
-    useEffect(() => { // "Run this when something happens"
-        const socket = new WebSocket('ws://localhost:8080')
-        socketRef.current = socket
+    useEffect(() => { // "Run this when some event occurs"
+        const connect = () => {
+            const socket = new WebSocket('ws://localhost:8080')
+            socketRef.current = socket
 
-        socket.onopen = () => {
-            console.log('Connected to HoneyWasp server')
-            socket.send('WebUI ready')
-        }
+            socket.onopen = () => {
+                console.log('Connected to HoneyWasp server')
+                socket.send('WebUI ready')
+            }
 
-        socket.onmessage = (event) => {
-            console.log('Server:', event.data)
+            socket.onmessage = (event) => {
+                console.log('Server:', event.data)
 
-            if (event.data === 'connected') {
-                setConnected(true)
-            } else {
-                setHoneyWaspVersion(event.data)
+                if (connected == false) {
+                    setHoneyWaspVersion(event.data)
+                    setConnected(true)
+                }
+            }
+
+            socket.onerror = (event) => {
+                console.error('WEBSOCKET ERROR', event)
+            }
+
+            socket.onclose = (event) => {
+                console.log('WEBSOCKET CLOSED', event.code, event.reason)
+
+                setConnected(false)
+
+                setTimeout(() => {
+                    console.log('RETRYING...')
+                    connect()
+                }, 1000) // "Run that stuff after 1 second"
             }
         }
 
-        socket.onerror = (event) => {
-            console.error('WEBSOCKET ERROR', event)
-        }
-
-        socket.onclose = (event) => {
-            console.log('WEBSOCKET CLOSED', event.code, event.reason)
-        }
-
-        return () => {
-            socket.close()
-        }
+        connect()
     }, []) // [] means on startup after website renders
 
     return (
@@ -52,13 +58,18 @@ function App() {
                 <section id="bottom-left">
                     <div className="sysinfo">
                         <img src={mainLogo} className="logoImage" alt="HoneyWasp logo"/>
-                        <span className="repoinfo">TruFoox/HoneyWasp WebUI {webUIVersion}</span>
+                        <div className="repoinfo">
+                            <text>TruFoox/HoneyWasp WebUI v{webUIVersion}</text>
+                            <br/>
+                            <text>HoneyWasp not found ✗</text>
+                        </div>
                     </div>
                 </section>
                 <section id="center">
                     <div className="loadingScreen">
                         <img src={loadingImage}/>
-                        <div className="repoText"></div>
+                        <br/><br/>
+                        <h2>Searching for HoneyWasp.</h2>
                     </div>
                 </section>
             </>
@@ -66,10 +77,10 @@ function App() {
             <section id="bottom-left">
                 <div className="sysinfo">
                     <img src={mainLogo} className = "logoImage" alt="HoneyWasp logo" />
-                    <div className="repoText">
-                        <span className="repoinfo">TruFoox/HoneyWasp WebUI {webUIVersion}</span>
-                        <br />
-                        <span className="repoinfo">TruFoox/HoneyWasp {honeyWaspVersion} connected ✓</span>
+                    <div className="repoinfo">
+                        <text>TruFoox/HoneyWasp WebUI v{webUIVersion}</text>
+                        <br/>
+                        <text>TruFoox/HoneyWasp v{honeyWaspVersion} connected ✓</text>
                     </div>
                 </div>
             </section>
