@@ -8,10 +8,14 @@ import './App.css'
 function App() {
     // Apparently js variables need a setter defined alongside it for it to change dynamically w/ react
     const [connected, setConnected] = useState(false) // Usestate links the setter and the var itself
-    const webUIVersion = "v1.0"
+    const webUIVersion = "1.0"
     const [honeyWaspVersion, setHoneyWaspVersion] = useState<string>("Not Fetched")
 
     const socketRef = useRef<WebSocket | null>(null); // Remember to use socketRef.current when referencing
+
+    useEffect(() => { // Set misc settings
+        document.title = "HoneyWasp WebUI"; // Set title
+    }, []);
 
     useEffect(() => { // "Run this when some event occurs"
         const connect = () => {

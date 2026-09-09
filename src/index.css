@@ -51,6 +51,10 @@ body {
     margin: 0;
 }
 
+.header {
+
+}
+
 .repoinfo {
     color: var(--text-color);
     font-family: monospace;
