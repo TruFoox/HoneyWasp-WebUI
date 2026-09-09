@@ -14,44 +14,36 @@ function App() {
     const socketRef = useRef(null) // Use socketRef.current when referencing
 
     useEffect(() => { // "Run this when something happens"
-        const connect = () => {
-            const socket = new WebSocket('ws://localhost:8080')
-            socketRef.current = socket
+        const socket = new WebSocket('ws://localhost:8080')
+        socketRef.current = socket
 
-            socket.onopen = () => {
-                console.log('Connected to HoneyWasp server')
-                socket.send('WebUI ready')
-            }
+        socket.onopen = () => {
+            console.log('Connected to HoneyWasp server')
+            socket.send('WebUI ready')
+        }
 
-            socket.onmessage = (event) => {
-                console.log('Server:', event.data)
+        socket.onmessage = (event) => {
+            console.log('Server:', event.data)
 
-                if (event.data === 'connected') {
-                    setConnected(true)
-                } else {
-                    setHoneyWaspVersion(event.data)
-                }
-            }
-
-            socket.onclose = () => {
-                setTimeout(connect, 1000)
+            if (event.data === 'connected') {
+                setConnected(true)
+            } else {
+                setHoneyWaspVersion(event.data)
             }
         }
 
-        connect()
+        socket.onerror = (event) => {
+            console.error('WEBSOCKET ERROR', event)
+        }
+
+        socket.onclose = (event) => {
+            console.log('WEBSOCKET CLOSED', event.code, event.reason)
+        }
 
         return () => {
-            socketRef.current?.close()
+            socket.close()
         }
     }, []) // [] means on startup after website renders
-
-    useEffect(() => {
-        if (connected) {
-
-            socketRef.current.send(honeyWaspVersion)
-            setHoneyWaspVersion(honeyWaspVersion);
-        }
-    }, [connected]) // "Send once connected is true"
 
     return (
         <>
