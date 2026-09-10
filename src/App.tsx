@@ -27,18 +27,18 @@ function App() {
         const connect = () => {
             socketRef.current = new WebSocket('ws://localhost:8080')
 
-            const socket = socketRef; // Prevents errors for some reason idfk
+            const socket = socketRef.current; // Prevents github from bitching about it being potentially null bc null doesnt have .current
 
-            if (socket.current == null) return
+            if (socket == null) return
 
-            socket.current.onopen = () => {
+            socket.onopen = () => {
                 setConnected(true)
                 console.log('Connected to HoneyWasp')
 
-                socket.current?.send('webui-ready')
+                socket?.send('webui-ready')
             }
 
-            socket.current.onmessage = (event) => { // Messages sent, other than first, in format Identifier.Data
+            socket.onmessage = (event) => { // Messages sent, other than first, in format Identifier.Data
                 console.log('Server:', event.data)
 
                 console.log('Server:', event.data)
@@ -62,11 +62,11 @@ function App() {
 
             }
 
-            socket.current.onerror = (event) => {
+            socket.onerror = (event) => {
                 console.error('Websocket ERROR', event)
             }
 
-            socket.current.onclose = (event) => {
+            socket.onclose = (event) => {
                 console.log('Websocket CLOSED', event.code, event.reason)
 
                 setConnected(false)
@@ -86,11 +86,11 @@ function App() {
     useEffect(() => { // If website not rendering, something here is probably why
         if (!connected || !socketRef.current) return // If this is running because connected was initialized or websocket.current doesn't exist, quit
 
-        const socket = socketRef;
+        const socket = socketRef.current;
 
         const fetchConfig = () => {
             console.log("Requesting config")
-            socket.current.send("send-config")
+            socket.send("send-config")
         }
 //
         // Remove ts later. To stop compiler from bitching that config is unused
