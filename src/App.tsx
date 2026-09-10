@@ -50,7 +50,7 @@ function App() {
                 switch (flag) { // Handle incoming messages
                     case "config":
                         console.log("Config updated")
-for c
+
                         setConfig(JSON.parse(data)) // Convert data to json and set as config
                         break;
                 }
@@ -87,6 +87,9 @@ for c
             socketRef.current.send("send-config")
         }
 //
+        // Remove ts later. To stop compiler from bitching that config is unused
+        const e = config;
+        if (e == config) {}
         fetchConfig()
     }, [connected]); // Run once when website rendered/connected initialized, then again when connected
 
@@ -94,16 +97,14 @@ for c
         <>
             {!connected ? (
                 <>
-                    <section id="bottom-left">
-                        <div className="sysinfo">
-                            <img src={mainLogo} className="logoImage" alt="HoneyWasp logo"/>
-                            <div className="repoinfo">
-                                <text>TruFoox/HoneyWasp WebUI v{webUIVersion}</text>
-                                <br/>
-                                <text>HoneyWasp not found ✗</text>
-                            </div>
+                    <div className="sys-info">
+                        <img src={mainLogo} className="logoImage" alt="HoneyWasp logo"/>
+                        <div className="repo-info">
+                            <text>TruFoox/HoneyWasp WebUI v{webUIVersion}</text>
+                            <br/>
+                            <text>HoneyWasp not found ✗</text>
                         </div>
-                    </section>
+                    </div>
                     <section id="center">
                         <div className="loadingScreen">
                             <img src={loadingImage}/>
