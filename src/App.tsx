@@ -5,6 +5,7 @@ import loadingImage from "./assets/loading.gif";
 
 
 import './App.css'
+
 function App() {
     // Apparently js variables need a setter defined alongside it for it to change dynamically w/ react
     const [connected, setConnected] = useState(false) // Usestate links the setter and the var itself
@@ -12,8 +13,9 @@ function App() {
     const webUIVersion = "1.0"
     const [honeyWaspVersion, setHoneyWaspVersion] = useState<string>("ersion not fetched") // No v because it adds v to number later (eg v1.5)
 
-    // Every useeffect refs different variables ig so we need useref to keep it as one
-    const socketRef = useRef<WebSocket | null>(null)
+    // Every useeffect referecess different instance of socket so ig so we need useref to keep it as one
+    // Normally this would be used with a secondary variable but here we are treating socketref as socket, so I renamed it
+    const socket = useRef<WebSocket | null>(null)
 
     useEffect(() => { // Set misc settings
         document.title = "HoneyWasp WebUI"; // Set title
@@ -24,16 +26,18 @@ function App() {
         // Currently not using promise
         // Unsure of diff between this and "async function connect() {}"
         const connect = () => {
-            socketRef.current = new WebSocket('ws://localhost:8080')
+            socket.current = new WebSocket('ws://localhost:8080')
 
-            socketRef.current.onopen = () => {
+            if (socket.current == null) return
+
+            socket.current.onopen = () => {
                 setConnected(true)
                 console.log('Connected to HoneyWasp')
 
-                socketRef.current?.send('webui-ready')
+                socket.current?.send('webui-ready')
             }
 
-            socketRef.current.onmessage = (event) => { // Messages sent, other than first, in format Identifier.Data
+            socket.current.onmessage = (event) => { // Messages sent, other than first, in format Identifier.Data
                 console.log('Server:', event.data)
 
                 console.log('Server:', event.data)
@@ -57,11 +61,11 @@ function App() {
 
             }
 
-            socketRef.current.onerror = (event) => {
+            socket.current.onerror = (event) => {
                 console.error('Websocket ERROR', event)
             }
 
-            socketRef.current.onclose = (event) => {
+            socket.current.onclose = (event) => {
                 console.log('Websocket CLOSED', event.code, event.reason)
 
                 setConnected(false)
@@ -79,12 +83,11 @@ function App() {
     }, []) // [] means on startup after website renders
 
     useEffect(() => { // If website not rendering, something here is probably why
-        if (!connected || socketRef.current == null) return // If this is running because connected was initialized or websocket.current doesn't exist, quit
-
+        if (!connected || !socket.current) return // If this is running because connected was initialized or websocket.current doesn't exist, quit
 
         const fetchConfig = () => {
             console.log("Requesting config")
-            socketRef.current.send("send-config")
+            socket.current.send("send-config")
         }
 //
         // Remove ts later. To stop compiler from bitching that config is unused
