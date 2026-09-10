@@ -13,9 +13,8 @@ function App() {
     const webUIVersion = "1.0"
     const [honeyWaspVersion, setHoneyWaspVersion] = useState<string>("ersion not fetched") // No v because it adds v to number later (eg v1.5)
 
-    // Every useeffect referecess different instance of socket so ig so we need useref to keep it as one
-    // Normally this would be used with a secondary variable but here we are treating socketref as socket, so I renamed it
-    const socket = useRef<WebSocket | null>(null)
+    // Every useeffect references different instance of socket so ig so we need useref to keep it as one
+    const socketRef = useRef<WebSocket | null>(null)
 
     useEffect(() => { // Set misc settings
         document.title = "HoneyWasp WebUI"; // Set title
@@ -26,7 +25,9 @@ function App() {
         // Currently not using promise
         // Unsure of diff between this and "async function connect() {}"
         const connect = () => {
-            socket.current = new WebSocket('ws://localhost:8080')
+            socketRef.current = new WebSocket('ws://localhost:8080')
+
+            const socket = socketRef; // Prevents errors for some reason idfk
 
             if (socket.current == null) return
 
@@ -83,7 +84,9 @@ function App() {
     }, []) // [] means on startup after website renders
 
     useEffect(() => { // If website not rendering, something here is probably why
-        if (!connected || !socket.current) return // If this is running because connected was initialized or websocket.current doesn't exist, quit
+        if (!connected || !socketRef.current) return // If this is running because connected was initialized or websocket.current doesn't exist, quit
+
+        const socket = socketRef;
 
         const fetchConfig = () => {
             console.log("Requesting config")
