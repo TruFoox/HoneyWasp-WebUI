@@ -25,9 +25,10 @@ function App() {
         // Currently not using promise
         // Unsure of diff between this and "async function connect() {}"
         const connect = () => {
-            socketRef.current = new WebSocket('ws://localhost:8080')
+            console.log('Websocket started')
+            socketRef.current = new WebSocket('ws://localhost:8020')
 
-            const socket = socketRef.current; // Prevents github from bitching about it being potentially null bc null doesnt have .current
+            const socket = socketRef.current; // Prevents GitHub from bitching about it being potentially null bc null doesnt have .current
 
             if (socket == null) return
 
@@ -38,19 +39,17 @@ function App() {
                 socket?.send('webui-ready')
             }
 
-            socket.onmessage = (event) => { // Messages sent, other than first, in format Identifier.Data
+            socket.onmessage = (event) => { // Messages sent, other than first, in format Identifier\Data
                 console.log('Server:', event.data)
 
-                console.log('Server:', event.data)
-
-                if (!event.data.includes("/")) {
+                if (!event.data.includes("\\")) {
                     setHoneyWaspVersion(event.data)
                     return
                 }
 
                 // Get purpose of data being sent & data
-                const flag = event.data.substring(0, event.data.indexOf("/"))
-                const data = event.data.substring(event.data.indexOf("/") + 1, event.data.length)
+                const flag = event.data.substring(0, event.data.indexOf("\\"))
+                const data = event.data.substring(event.data.indexOf("\\") + 1, event.data.length)
 
                 switch (flag) { // Handle incoming messages
                     case "config":
@@ -90,7 +89,7 @@ function App() {
 
         const fetchConfig = () => {
             console.log("Requesting config")
-            socket.send("send-config")
+            socket.send("request-config")
         }
 //
         // Remove ts later. To stop compiler from bitching that config is unused
@@ -98,6 +97,12 @@ function App() {
         if (e == config) {}
         fetchConfig()
     }, [connected]); // Run once when website rendered/connected initialized, then again when connected
+
+
+    function setConfigValue() { // Rememeber general settings cannot be changed during runtime
+        socketRef.current?.send("set-value\\instagram\\autostart\\false")
+        socketRef.current?.send("restart-service\\instagram")
+    }
 
     return (
         <>
@@ -122,9 +127,10 @@ function App() {
             ) : (
                 <>
                     <section id="config-display">
+                        <button onClick={() => setConfigValue()}>Click Me</button>
                     </section>
                     <div className="sys-info">
-                        <img src={mainLogo} className="logoImage" alt="HoneyWasp logo"/>
+                    <img src={mainLogo} className="logoImage" alt="HoneyWasp logo"/>
                         <div className="repo-info">
                             <text>TruFoox/HoneyWasp WebUI v{webUIVersion}</text>
                             <br/>
